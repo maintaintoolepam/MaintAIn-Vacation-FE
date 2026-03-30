@@ -2,7 +2,7 @@ name: FE Push Trigger
 
 on:
   push:
-    branches: [main]
+    branches: [main, EPMBOS-6412-add-pipeline]
 
 jobs:
   trigger-e2e:
