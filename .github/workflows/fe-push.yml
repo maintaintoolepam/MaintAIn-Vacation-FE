@@ -1,0 +1,25 @@
+name: FE Push Trigger
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  trigger-e2e:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Trigger E2E pipeline
+        run: |
+          curl -L -X POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${{ secrets.E2E_TRIGGER_TOKEN }}" \
+            https://api.github.com/repos/maintaintoolepam/MaintAIn-Vacation-E2E/dispatches \
+            -d '{
+              "event_type": "run-e2e",
+              "client_payload": {
+                "source_repo": "${{ github.repository }}",
+                "source_branch": "${{ github.ref_name }}",
+                "source_sha": "${{ github.sha }}"
+              }
+            }'
