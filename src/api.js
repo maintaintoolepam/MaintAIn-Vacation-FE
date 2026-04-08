@@ -1,4 +1,8 @@
-const API_BASE = 'http://localhost:8181/api';
+// Use an empty string so the browser makes relative requests to '/api'.
+// This relies on Vite (dev) or Nginx (prod) to proxy the traffic to the backend correctly.
+const BASE_URL = import.meta.env.VITE_BACKEND_URL || '';
+
+const API_BASE = `${BASE_URL}/api`;
 
 function getAuthHeader() {
   const username = sessionStorage.getItem('username');
@@ -17,15 +21,20 @@ async function apiRequest(method, path, body) {
       'Content-Type': 'application/json',
     },
   };
+
   if (body) {
     options.body = JSON.stringify(body);
   }
+
   const response = await fetch(API_BASE + path, options);
+
   if (!response.ok) {
     const text = await response.text().catch(() => '');
     throw new Error(text || `Request failed with status ${response.status}`);
   }
+
   if (response.status === 204) return null;
+
   return response.json();
 }
 
